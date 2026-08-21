@@ -1,14 +1,13 @@
 # Stripe Coupon Extensions
 
-This repository contains the out-of-the-box [Billing Extensions](https://docs.stripe.com/billing/scripts) that provide custom discounting logic, available as a first-party app on Stripe. Each extension implements an extension interface and runs as part of a [Stripe App](https://docs.stripe.com/stripe-apps).
+This repository contains the out-of-the-box [Coupon Extensions](https://docs.stripe.com/extensions/discount-calculation-extension) that provide custom discounting logic, available as a first-party app on Stripe. Each extension implements an extension interface and runs as part of a [Stripe App](https://docs.stripe.com/stripe-apps).
 
 Use these extensions to override default coupon and discounting logic — control how discounts are calculated, applied, and combined across invoices and subscriptions.
 
 ## Documentation
 
-- [Billing Extensions overview](https://docs.stripe.com/billing/scripts) — learn what billing extensions are and how they work.
-- [Stripe-authored extensions](https://docs.stripe.com/billing/scripts/stripe-authored) — details on the extensions included in this repository.
-- [Author your own](https://docs.stripe.com/billing/scripts/author-your-own) — build custom extensions and upload them to your account via Stripe Apps.
+- [Discount calculation extensions](https://docs.stripe.com/extensions/discount-calculation-extension) — learn how coupon extensions customize discount calculation.
+- [Stripe Apps](https://docs.stripe.com/stripe-apps) — learn how extensions are packaged and distributed as apps.
 
 ## Available extensions
 
