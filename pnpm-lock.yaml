@@ -15,11 +15,11 @@ importers:
         specifier: ^9.0.0
         version: 9.39.5
       '@stripe/extensibility-dev-tools':
-        specifier: ^1.5.0
-        version: 1.5.0(typescript@5.9.3)
+        specifier: ^2.0.2
+        version: 2.0.2(typescript@5.9.3)
       '@stripe/extensibility-eslint-plugin':
-        specifier: ^1.3.1
-        version: 1.3.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+        specifier: ^2.0.1
+        version: 2.0.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       '@stripe/extensibility-language-server':
         specifier: ^1.0.0
         version: 1.0.0(typescript@5.9.3)
@@ -74,6 +74,30 @@ importers:
       vitest:
         specifier: ^3.0.0
         version: 3.2.7(@types/node@20.19.43)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0)
+
+  extensions/buy_x_get_y_free:
+    dependencies:
+      '@stripe/extensibility-sdk':
+        specifier: ^2.0.0
+        version: 2.0.0(typescript@5.9.3)
+
+  extensions/percent_off_up_to_maximum:
+    dependencies:
+      '@stripe/extensibility-sdk':
+        specifier: ^2.0.0
+        version: 2.0.0(typescript@5.9.3)
+
+  extensions/price_targeted_amount_off:
+    dependencies:
+      '@stripe/extensibility-sdk':
+        specifier: ^2.0.0
+        version: 2.0.0(typescript@5.9.3)
+
+  extensions/price_targeted_percent_off:
+    dependencies:
+      '@stripe/extensibility-sdk':
+        specifier: ^2.0.0
+        version: 2.0.0(typescript@5.9.3)
 
 packages:
 
@@ -455,23 +479,34 @@ packages:
     peerDependencies:
       typescript: ^5.0.0
 
-  '@formspec/build@0.1.0-alpha.59':
-    resolution: {integrity: sha512-xQiTXn/8D1ehs969N3HuMjiOl5CIaX7NxZa8Oth/mZgvFxygiyXjrWQ3e7wKqComy9CHnhYsS5AaGJtYLfzHdg==}
+  '@formspec/analysis@0.1.0-alpha.70':
+    resolution: {integrity: sha512-NYQFnp5uCO/YJRLqaM+Lp2W2NSOGGxQ+HM2wtKYUdXm+ODGfZe4gbXVTBsuyIvlhww1cCEwzn7+naJ7BLLDisA==}
+    peerDependencies:
+      typescript: '>=5.7.3 <7'
+
+  '@formspec/build@0.1.0-alpha.70':
+    resolution: {integrity: sha512-gZ4htbq5JdMhmFyE/b7dAgxU1zFRJTTrkCNlVVkeZ0Jb7oWwMVtn4/meFA4gLsOL+Y/pSv8B6vZoReZciZFKRQ==}
     hasBin: true
     peerDependencies:
-      typescript: ^5.0.0
+      typescript: '>=5.7.3 <7'
 
   '@formspec/config@0.1.0-alpha.59':
     resolution: {integrity: sha512-3avnkqmfnxgB7kOkQ9lCb1qzdP5nw4kjYsNLsBVwScGucVlo9n35EbXe6Bj832ofZHun3ynTx/apBE83a5K1Ng==}
 
+  '@formspec/config@0.1.0-alpha.70':
+    resolution: {integrity: sha512-ZIFbK3sc6SGBJn2L0rgEl3xO0upFzbfripFzCgBPpdUzdvmakSHfC/InnR7NPwePqt+FuOM/Smy5scpksFTQ+Q==}
+
   '@formspec/core@0.1.0-alpha.59':
     resolution: {integrity: sha512-swPpuwpNwC7obr3vQN5p4ed4w2GwtwcaOzt7kcqv17O+ZkbXEaeq7lCvq0zcs7RVWSFWGbFoli3UMyFIfcfPwA==}
 
-  '@formspec/eslint-plugin@0.1.0-alpha.59':
-    resolution: {integrity: sha512-+mJAgTXeRMxuzsvTtk4ASpACvXDhmcHKoYHZ8zY5kevvP7kyqaENvAWhdS6MVHx3KeRTV0Dn5okaffSmfMY4ZA==}
+  '@formspec/core@0.1.0-alpha.70':
+    resolution: {integrity: sha512-88FRrqxJSWKmLIjX5VwIgkxZsoSML1PSpZXCf8fs4gRTikXjCptWc3xRy4dzCXIMXglem+RDEDB9DpGV2oH80g==}
+
+  '@formspec/eslint-plugin@0.1.0-alpha.71':
+    resolution: {integrity: sha512-hDzimaFwRE+Tlu/lMucnXtcO5SlJ5J5e61nwELS8fEJtCmJg7NK0gEuGW6VegPYpbOekHtmDjPcuHRzW9MH4XQ==}
     peerDependencies:
-      eslint: ^9.0.0
-      typescript: ^5.0.0
+      eslint: ^9.39.2
+      typescript: '>=5.7.3 <7'
 
   '@formspec/language-server@0.1.0-alpha.59':
     resolution: {integrity: sha512-ope3vMskN9Pyb7Vpm8BO2IxhFnFdIIvpPaLAetptbCWnBRI+i86o2J+R4tYj6o251EGXPn7rss5zcGpaX+74Yw==}
@@ -690,18 +725,18 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@stripe/extensibility-custom-objects-tools@4.4.0':
-    resolution: {integrity: sha512-FSKlCwpRaWOqp2KQkrPu5TF8puxrX5f9Du59AHDlRodgQpLySfyYrsBYYxUL0q8+dDPBjJPoHXOI6R9dOlMdDQ==}
+  '@stripe/extensibility-custom-objects-tools@4.7.1':
+    resolution: {integrity: sha512-HXLwbjBTxvgoIdaxGZ5AHxgM7Oy2eRtj39iw/AQ7FIdjGbIUtydKeBJzo+iNZfcT9RzcHhCblDmZEy4lkSKENQ==}
     hasBin: true
 
-  '@stripe/extensibility-dev-tools@1.5.0':
-    resolution: {integrity: sha512-uH2jK8UUb+mVVhUPYCDGkOxdT014taM6pKh4ZP2dTZkK846CDvZt/FQMG4h7ii0/SBxG9mC3/sW75Li6uD/Irw==}
+  '@stripe/extensibility-dev-tools@2.0.2':
+    resolution: {integrity: sha512-MedI+kxozpbloXjzpYrZgUEyMQFF8Bs3lUtOvBEUTQHDjqZPZiE6oy8KERP6e/iV0DlifKZSsnaCZENtBeD7Zg==}
     hasBin: true
     peerDependencies:
       typescript: ^5.8.0
 
-  '@stripe/extensibility-eslint-plugin@1.3.1':
-    resolution: {integrity: sha512-Fjp5j2dT/4Zj2Tk1ByY4OkhN8xMWHl8cY32Fa3MLrgmozkSMzRKYLwoiUicKQHdNvjFu9T0PXsIf4xmT98sBIQ==}
+  '@stripe/extensibility-eslint-plugin@2.0.1':
+    resolution: {integrity: sha512-8TZDWeO7F69W3VBGBGywIk9bEk7ub65YIDn8XL4SVBxFyzi95DDzu+iQLjRf17IneGavALmVo4zufH+Zjskr2Q==}
     peerDependencies:
       eslint: ^9.0.0
       typescript: ^5.8.0
@@ -711,13 +746,18 @@ packages:
     peerDependencies:
       typescript: ^5.8.0
 
+  '@stripe/extensibility-jsonschema-tools@1.0.1':
+    resolution: {integrity: sha512-oxvMGq3A77xTV2D2fpKEfH429NyrsTIrFX8DPrwBxxv85spvf6BzLqj7o1Uz8CzqyP1I+df3qTejtDtJvxmq2w==}
+    peerDependencies:
+      typescript: ^5.8.0
+
   '@stripe/extensibility-language-server@1.0.0':
     resolution: {integrity: sha512-DMSkyeeLt6srHyI9GaXDkHhQRq0bgUxEh3XDjj4hktIvf7lRKkwkElzSF5TccwCVwVYKj5OJseFWQVvX2ICRrA==}
     peerDependencies:
       typescript: ^5.8.0
 
-  '@stripe/extensibility-sdk@1.9.0':
-    resolution: {integrity: sha512-xE7Y0FSHgroQH8Du2rjE2Yp0KynxO5/eZtW6a5+Ysh9fjPkPqTfavfr/6J5apsvovV3bgRZ/IaO5edojiKSHBw==}
+  '@stripe/extensibility-sdk@2.0.0':
+    resolution: {integrity: sha512-/iPaAL7jUzMWhsQ/Y3dTaBh2YMtv+nmkqW1+urIMCUvTiZtzJ5zKPtvArZ3A+82MS57eZ+vc7j15u5CEog9wBw==}
     engines: {node: '>=18.18.0'}
 
   '@stripe/extensibility-test-helpers@1.2.0':
@@ -730,6 +770,9 @@ packages:
 
   '@stripe/extensibility-tool-utils@1.0.0':
     resolution: {integrity: sha512-h1NiCBncPXvP4vw1Fu/j+B4NorJeJMLmCo3ArwKie46q5EtECTX4p5+P4NT7Uo0/5CamR/Rt0/HLalVqXvSCHQ==}
+
+  '@stripe/extensibility-tool-utils@1.0.1':
+    resolution: {integrity: sha512-n4qzMXlNPlR9vvbx8jqiRefpGqgnnqgBljXhbEoqtypP6HtubeC9VXntcJNZTu7yFev7uMo6FuPtp1Gr9Nx6wg==}
 
   '@ts-morph/common@0.28.1':
     resolution: {integrity: sha512-W74iWf7ILp1ZKNYXY5qbddNaml7e9Sedv5lvU1V8lftlitkc9Pq1A+jlH23ltDgWYeZFFEqGCD1Ies9hqu3O+g==}
@@ -2338,11 +2381,20 @@ snapshots:
       pino: 9.14.0
       pino-pretty: 11.3.0
 
-  '@formspec/build@0.1.0-alpha.59(typescript@5.9.3)':
+  '@formspec/analysis@0.1.0-alpha.70(typescript@5.9.3)':
     dependencies:
-      '@formspec/analysis': 0.1.0-alpha.59(typescript@5.9.3)
-      '@formspec/config': 0.1.0-alpha.59
-      '@formspec/core': 0.1.0-alpha.59
+      '@formspec/core': 0.1.0-alpha.70
+      '@microsoft/tsdoc': 0.16.0
+      typescript: 5.9.3
+    optionalDependencies:
+      pino: 9.14.0
+      pino-pretty: 11.3.0
+
+  '@formspec/build@0.1.0-alpha.70(typescript@5.9.3)':
+    dependencies:
+      '@formspec/analysis': 0.1.0-alpha.70(typescript@5.9.3)
+      '@formspec/config': 0.1.0-alpha.70
+      '@formspec/core': 0.1.0-alpha.70
       typescript: 5.9.3
       zod: 3.25.76
     optionalDependencies:
@@ -2355,14 +2407,21 @@ snapshots:
       jiti: 2.7.0
       yaml: 2.9.0
 
+  '@formspec/config@0.1.0-alpha.70':
+    dependencies:
+      '@formspec/core': 0.1.0-alpha.70
+      jiti: 2.7.0
+
   '@formspec/core@0.1.0-alpha.59': {}
 
-  '@formspec/eslint-plugin@0.1.0-alpha.59(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@formspec/core@0.1.0-alpha.70': {}
+
+  '@formspec/eslint-plugin@0.1.0-alpha.71(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
-      '@formspec/analysis': 0.1.0-alpha.59(typescript@5.9.3)
-      '@formspec/build': 0.1.0-alpha.59(typescript@5.9.3)
-      '@formspec/config': 0.1.0-alpha.59
-      '@formspec/core': 0.1.0-alpha.59
+      '@formspec/analysis': 0.1.0-alpha.70(typescript@5.9.3)
+      '@formspec/build': 0.1.0-alpha.70(typescript@5.9.3)
+      '@formspec/config': 0.1.0-alpha.70
+      '@formspec/core': 0.1.0-alpha.70
       '@typescript-eslint/utils': 8.67.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
       eslint: 9.39.5(jiti@2.7.0)
       typescript: 5.9.3
@@ -2532,21 +2591,21 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.4':
     optional: true
 
-  '@stripe/extensibility-custom-objects-tools@4.4.0':
+  '@stripe/extensibility-custom-objects-tools@4.7.1':
     dependencies:
-      '@formspec/build': 0.1.0-alpha.59(typescript@5.9.3)
-      '@stripe/extensibility-tool-utils': 1.0.0
+      '@formspec/build': 0.1.0-alpha.70(typescript@5.9.3)
+      '@stripe/extensibility-tool-utils': 1.0.1
       ts-morph: 27.0.2
       typescript: 5.9.3
       yargs: 17.7.3
 
-  '@stripe/extensibility-dev-tools@1.5.0(typescript@5.9.3)':
+  '@stripe/extensibility-dev-tools@2.0.2(typescript@5.9.3)':
     dependencies:
-      '@formspec/build': 0.1.0-alpha.59(typescript@5.9.3)
-      '@formspec/core': 0.1.0-alpha.59
+      '@formspec/build': 0.1.0-alpha.70(typescript@5.9.3)
+      '@formspec/core': 0.1.0-alpha.70
       '@npmcli/package-json': 7.0.5
-      '@stripe/extensibility-custom-objects-tools': 4.4.0
-      '@stripe/extensibility-tool-utils': 1.0.0
+      '@stripe/extensibility-custom-objects-tools': 4.7.1
+      '@stripe/extensibility-tool-utils': 1.0.1
       diff: 8.0.4
       js-toml: 1.2.2
       mustache: 4.2.0
@@ -2557,11 +2616,11 @@ snapshots:
       yargs: 17.7.3
       zod: 4.4.3
 
-  '@stripe/extensibility-eslint-plugin@1.3.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
+  '@stripe/extensibility-eslint-plugin@2.0.1(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)':
     dependencies:
-      '@formspec/eslint-plugin': 0.1.0-alpha.59(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
-      '@stripe/extensibility-jsonschema-tools': 1.0.0(typescript@5.9.3)
-      '@stripe/extensibility-sdk': 1.9.0
+      '@formspec/eslint-plugin': 0.1.0-alpha.71(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+      '@stripe/extensibility-jsonschema-tools': 1.0.1(typescript@5.9.3)
+      '@stripe/extensibility-sdk': 2.0.0(typescript@5.9.3)
       eslint: 9.39.5(jiti@2.7.0)
       eslint-plugin-no-secrets: 2.3.3(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-security: 3.0.1
@@ -2575,6 +2634,11 @@ snapshots:
       '@stripe/extensibility-tool-utils': 1.0.0
       typescript: 5.9.3
 
+  '@stripe/extensibility-jsonschema-tools@1.0.1(typescript@5.9.3)':
+    dependencies:
+      '@stripe/extensibility-tool-utils': 1.0.1
+      typescript: 5.9.3
+
   '@stripe/extensibility-language-server@1.0.0(typescript@5.9.3)':
     dependencies:
       '@formspec/language-server': 0.1.0-alpha.59(typescript@5.9.3)
@@ -2583,9 +2647,13 @@ snapshots:
       typescript: 5.9.3
       vscode-languageserver: 9.0.1
 
-  '@stripe/extensibility-sdk@1.9.0':
+  '@stripe/extensibility-sdk@2.0.0(typescript@5.9.3)':
     dependencies:
-      '@formspec/core': 0.1.0-alpha.59
+      '@formspec/build': 0.1.0-alpha.70(typescript@5.9.3)
+      '@formspec/core': 0.1.0-alpha.70
+      '@stripe/extensibility-jsonschema-tools': 1.0.1(typescript@5.9.3)
+    transitivePeerDependencies:
+      - typescript
 
   '@stripe/extensibility-test-helpers@1.2.0(vitest@3.2.7(@types/node@20.19.43)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))':
     optionalDependencies:
@@ -2594,6 +2662,18 @@ snapshots:
   '@stripe/extensibility-tool-utils@1.0.0':
     dependencies:
       '@formspec/core': 0.1.0-alpha.59
+      inflected: 2.1.0
+      jsonc-parser: 3.3.1
+      mustache: 4.2.0
+      pino: 9.14.0
+      pino-pretty: 13.1.3
+      semver: 7.8.5
+      typescript: 5.9.3
+      yaml: 2.9.0
+
+  '@stripe/extensibility-tool-utils@1.0.1':
+    dependencies:
+      '@formspec/core': 0.1.0-alpha.70
       inflected: 2.1.0
       jsonc-parser: 3.3.1
       mustache: 4.2.0

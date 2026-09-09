@@ -1,9 +1,93 @@
 $schema: https://stripe.com/stripe-app/v2.0.0/schema
 id: com.stripe.coupon.extensions
 name: Stripe Coupon Extensions
-version: 0.0.1
+version: 0.0.2
 icon: ./assets/icon.png
 declarations:
   distribution_type: public
   sandbox_install_compatible: true
-extensions: []
+extensions:
+  - id: percent_off_up_to_maximum
+    name: Percent off up to maximum
+    description: |
+      Apply a percentage discount to the total invoice amount, capped at a configurable maximum monetary amount.
+    interface_id: commerce.discount_calculation
+    version: 0.0.2
+    stripe_version: 2026-09-01-20.internal
+    configuration:
+      input_schema:
+        type: json_schema
+        content: extensions/percent_off_up_to_maximum/generated/config.schema.json
+      ui_schema:
+        type: jsonforms
+        content: extensions/percent_off_up_to_maximum/generated/config.ui.json
+    script:
+      type: typescript
+      content: extensions/percent_off_up_to_maximum/src/index.ts
+    permissions: []
+    methods:
+      compute_discounts:
+        implementation_type: script
+  - id: buy_x_get_y_free
+    name: Buy X, get Y free
+    description: |
+      For products with matching metadata, discount up to a configured number of additional units after the required quantity has been purchased.
+    interface_id: commerce.discount_calculation
+    version: 0.0.2
+    stripe_version: 2026-09-01-20.internal
+    configuration:
+      input_schema:
+        type: json_schema
+        content: extensions/buy_x_get_y_free/generated/config.schema.json
+      ui_schema:
+        type: jsonforms
+        content: extensions/buy_x_get_y_free/generated/config.ui.json
+    script:
+      type: typescript
+      content: extensions/buy_x_get_y_free/src/index.ts
+    permissions: []
+    methods:
+      compute_discounts:
+        implementation_type: script
+  - id: price_targeted_percent_off
+    name: Price-targeted percent off
+    description: |
+      Apply a percentage discount to invoice line items whose prices contain a matching metadata key and value.
+    interface_id: commerce.discount_calculation
+    version: 0.0.2
+    stripe_version: 2026-09-01-20.internal
+    configuration:
+      input_schema:
+        type: json_schema
+        content: extensions/price_targeted_percent_off/generated/config.schema.json
+      ui_schema:
+        type: jsonforms
+        content: extensions/price_targeted_percent_off/generated/config.ui.json
+    script:
+      type: typescript
+      content: extensions/price_targeted_percent_off/src/index.ts
+    permissions: []
+    methods:
+      compute_discounts:
+        implementation_type: script
+  - id: price_targeted_amount_off
+    name: Price-targeted amount off
+    description: |
+      Apply a fixed monetary discount to each invoice line item whose price contains a matching metadata key and value.
+    interface_id: commerce.discount_calculation
+    version: 0.0.2
+    stripe_version: 2026-09-01-20.internal
+    configuration:
+      input_schema:
+        type: json_schema
+        content: extensions/price_targeted_amount_off/generated/config.schema.json
+      ui_schema:
+        type: jsonforms
+        content: extensions/price_targeted_amount_off/generated/config.ui.json
+    script:
+      type: typescript
+      content: extensions/price_targeted_amount_off/src/index.ts
+    permissions: []
+    methods:
+      compute_discounts:
+        implementation_type: script
