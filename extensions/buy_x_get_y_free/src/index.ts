@@ -18,21 +18,25 @@
  *   discounts 1 or 2 units, and buying 6 or more still discounts only 2 units.
  */
 
-import type { Commerce, Context, PositiveInteger } from '@stripe/extensibility-sdk';
+import type { Commerce, Context } from '@stripe/extensibility-sdk';
 import { Decimal, DEFAULT_DIV_PRECISION } from '@stripe/extensibility-sdk';
 
 export interface BuyXGetYFreeConfig extends Record<string, unknown> {
   /**
    * Number of units that must be purchased before free units are available.
    * @displayName Quantity required
+   * @multipleOf 1
+   * @minimum 1
    */
-  quantity_required: PositiveInteger;
+  quantity_required: number;
 
   /**
    * Maximum number of additional units that can be free.
    * @displayName Quantity free
+   * @multipleOf 1
+   * @minimum 1
    */
-  quantity_free: PositiveInteger;
+  quantity_free: number;
 
   /**
    * Product metadata key used to select eligible products.
