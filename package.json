@@ -1,6 +1,6 @@
 {
   "name": "com.stripe.coupon.extensions",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Stripe Coupon Extensions",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
