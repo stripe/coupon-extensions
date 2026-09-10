@@ -24,27 +24,27 @@ function calculate(
 describe('PercentOffUpToMaximum', () => {
   test('applies the percentage when it is below the maximum', () => {
     const discount = calculate(10_000, {
-      percentage_discount: 20,
-      maximum_discount: { amount: Decimal.from(5_000), currency: 'usd' },
+      percentageDiscount: 0.2,
+      maximumDiscount: { amount: Decimal.from(5_000), currency: 'usd' },
     });
 
     expect(discount.amount.toString()).toBe('2000');
     expect(discount.currency).toBe('usd');
   });
 
-  test('caps the percentage discount at the configured maximum', () => {
-    const discount = calculate(50_000, {
-      percentage_discount: 20,
-      maximum_discount: { amount: Decimal.from(5_000), currency: 'usd' },
+  test('caps a ten percent discount at five dollars', () => {
+    const discount = calculate(10_000, {
+      percentageDiscount: 0.1,
+      maximumDiscount: { amount: Decimal.from(500), currency: 'usd' },
     });
 
-    expect(discount.amount.toString()).toBe('5000');
+    expect(discount.amount.toString()).toBe('500');
   });
 
   test('caps percentages above 100 at the invoice total', () => {
     const discount = calculate(10_000, {
-      percentage_discount: 150,
-      maximum_discount: { amount: Decimal.from(20_000), currency: 'usd' },
+      percentageDiscount: 1.5,
+      maximumDiscount: { amount: Decimal.from(20_000), currency: 'usd' },
     });
 
     expect(discount.amount.toString()).toBe('10000');
@@ -52,8 +52,8 @@ describe('PercentOffUpToMaximum', () => {
 
   test('returns zero when currencies do not match', () => {
     const discount = calculate(10_000, {
-      percentage_discount: 20,
-      maximum_discount: { amount: Decimal.from(5_000), currency: 'eur' },
+      percentageDiscount: 0.2,
+      maximumDiscount: { amount: Decimal.from(5_000), currency: 'eur' },
     });
 
     expect(discount.amount.toString()).toBe('0');
@@ -61,12 +61,12 @@ describe('PercentOffUpToMaximum', () => {
 
   test('returns zero for zero percent or a non-positive invoice', () => {
     const config: PercentOffUpToMaximumConfig = {
-      percentage_discount: 0,
-      maximum_discount: { amount: Decimal.from(5_000), currency: 'usd' },
+      percentageDiscount: 0,
+      maximumDiscount: { amount: Decimal.from(5_000), currency: 'usd' },
     };
 
     expect(calculate(10_000, config).amount.toString()).toBe('0');
-    expect(calculate(0, { ...config, percentage_discount: 20 }).amount.toString()).toBe(
+    expect(calculate(0, { ...config, percentageDiscount: 0.2 }).amount.toString()).toBe(
       '0'
     );
   });
