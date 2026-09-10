@@ -25,19 +25,19 @@ export interface PriceTargetedAmountOffConfig extends Record<string, unknown> {
    * @displayName Fixed amount off
    * @minimum :amount 0
    */
-  fixed_amount_off: MonetaryAmount;
+  fixedAmountOff: MonetaryAmount;
 
   /**
    * Price metadata key used to select eligible line items.
    * @displayName Metadata key
    */
-  metadata_key: string;
+  metadataKey: string;
 
   /**
    * Exact price metadata value required for eligibility.
    * @displayName Metadata value
    */
-  metadata_value: string;
+  metadataValue: string;
 }
 
 function minimum(left: Decimal, right: Decimal): Decimal {
@@ -52,18 +52,17 @@ export default class PriceTargetedAmountOff implements Commerce.DiscountCalculat
   ): Commerce.DiscountCalculation.DiscountResult {
     const { grossAmount } = request;
     const currencyMatches =
-      config.fixed_amount_off.currency.toLowerCase() ===
-      grossAmount.currency.toLowerCase();
+      config.fixedAmountOff.currency.toLowerCase() === grossAmount.currency.toLowerCase();
 
     let totalDiscount = Decimal.zero;
     if (
       currencyMatches &&
-      config.fixed_amount_off.amount.isPositive() &&
-      config.metadata_key.length > 0
+      config.fixedAmountOff.amount.isPositive() &&
+      config.metadataKey.length > 0
     ) {
       for (const lineItem of request.lineItems) {
         const metadataMatches =
-          lineItem.price?.metadata[config.metadata_key] === config.metadata_value;
+          lineItem.price?.metadata[config.metadataKey] === config.metadataValue;
         const lineCurrencyMatches =
           lineItem.subtotal.currency.toLowerCase() === grossAmount.currency.toLowerCase();
 
@@ -73,7 +72,7 @@ export default class PriceTargetedAmountOff implements Commerce.DiscountCalculat
           lineItem.subtotal.amount.isPositive()
         ) {
           totalDiscount = totalDiscount.add(
-            minimum(config.fixed_amount_off.amount, lineItem.subtotal.amount)
+            minimum(config.fixedAmountOff.amount, lineItem.subtotal.amount)
           );
         }
       }

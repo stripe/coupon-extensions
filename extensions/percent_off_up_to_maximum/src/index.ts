@@ -16,7 +16,7 @@
  */
 
 import type { Commerce, Context, MonetaryAmount } from '@stripe/extensibility-sdk';
-import { Decimal, DEFAULT_DIV_PRECISION } from '@stripe/extensibility-sdk';
+import { Decimal } from '@stripe/extensibility-sdk';
 
 export interface PercentOffUpToMaximumConfig extends Record<string, unknown> {
   /**
@@ -24,14 +24,14 @@ export interface PercentOffUpToMaximumConfig extends Record<string, unknown> {
    * @displayName Percentage discount
    * @format percent
    */
-  percentage_discount: number;
+  percentageDiscount: number;
 
   /**
    * Maximum monetary amount that can be discounted.
    * @displayName Maximum discount
    * @minimum :amount 0
    */
-  maximum_discount: MonetaryAmount;
+  maximumDiscount: MonetaryAmount;
 }
 
 function minimum(left: Decimal, right: Decimal): Decimal {
@@ -49,20 +49,18 @@ export default class PercentOffUpToMaximum implements Commerce.DiscountCalculati
 
     if (
       grossAmount.currency.toLowerCase() !==
-        config.maximum_discount.currency.toLowerCase() ||
+        config.maximumDiscount.currency.toLowerCase() ||
       !grossAmount.amount.isPositive() ||
-      !config.maximum_discount.amount.isPositive() ||
-      config.percentage_discount <= 0
+      !config.maximumDiscount.amount.isPositive() ||
+      config.percentageDiscount <= 0
     ) {
       return { discount: { amount: { amount: zero, currency: grossAmount.currency } } };
     }
 
-    const percentage = Math.min(config.percentage_discount, 100);
-    const percentageDiscount = grossAmount.amount
-      .mul(percentage)
-      .div(100, DEFAULT_DIV_PRECISION, 'half-even');
+    const percentage = Math.min(config.percentageDiscount, 1);
+    const percentageDiscount = grossAmount.amount.mul(percentage);
     const cappedDiscount = minimum(
-      minimum(percentageDiscount, config.maximum_discount.amount),
+      minimum(percentageDiscount, config.maximumDiscount.amount),
       grossAmount.amount
     );
 

@@ -28,7 +28,7 @@ export interface BuyXGetYFreeConfig extends Record<string, unknown> {
    * @multipleOf 1
    * @minimum 1
    */
-  quantity_required: number;
+  quantityRequired: number;
 
   /**
    * Maximum number of additional units that can be free.
@@ -36,19 +36,19 @@ export interface BuyXGetYFreeConfig extends Record<string, unknown> {
    * @multipleOf 1
    * @minimum 1
    */
-  quantity_free: number;
+  quantityFree: number;
 
   /**
    * Product metadata key used to select eligible products.
    * @displayName Metadata key
    */
-  metadata_key: string;
+  metadataKey: string;
 
   /**
    * Exact product metadata value required for eligibility.
    * @displayName Metadata value
    */
-  metadata_value: string;
+  metadataValue: string;
 }
 
 interface EligibleLine {
@@ -71,9 +71,9 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     const groupedLines = new Map<string, EligibleLine[]>();
 
     if (
-      config.quantity_required < 1 ||
-      config.quantity_free < 1 ||
-      config.metadata_key.length === 0
+      config.quantityRequired < 1 ||
+      config.quantityFree < 1 ||
+      config.metadataKey.length === 0
     ) {
       return {
         discount: {
@@ -85,7 +85,7 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     for (const lineItem of request.lineItems) {
       const product = lineItem.price?.product;
       const metadataMatches =
-        product?.metadata[config.metadata_key] === config.metadata_value;
+        product?.metadata[config.metadataKey] === config.metadataValue;
       const currencyMatches =
         lineItem.subtotal.currency.toLowerCase() === grossAmount.currency.toLowerCase();
       const quantity = lineItem.quantity;
@@ -111,8 +111,8 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     }
 
     let totalDiscount = Decimal.zero;
-    const requiredQuantity = Decimal.from(config.quantity_required);
-    const maximumFreeQuantity = Decimal.from(config.quantity_free);
+    const requiredQuantity = Decimal.from(config.quantityRequired);
+    const maximumFreeQuantity = Decimal.from(config.quantityFree);
 
     for (const lines of groupedLines.values()) {
       let totalQuantity = Decimal.zero;

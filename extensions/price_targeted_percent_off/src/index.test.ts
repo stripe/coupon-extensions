@@ -25,9 +25,9 @@ function line(
 }
 
 const config: PriceTargetedPercentOffConfig = {
-  percentage_off: 25,
-  metadata_key: 'promotion',
-  metadata_value: 'summer',
+  percentageOff: 0.25,
+  metadataKey: 'promotion',
+  metadataValue: 'summer',
 };
 
 function calculate(
@@ -83,7 +83,7 @@ describe('PriceTargetedPercentOff', () => {
   test('caps the percentage and aggregate discount at the invoice total', () => {
     const discount = calculate(
       [line(8_000, { promotion: 'summer' }), line(8_000, { promotion: 'summer' })],
-      { percentage_off: 150 },
+      { percentageOff: 1.5 },
       10_000
     );
 
@@ -94,7 +94,7 @@ describe('PriceTargetedPercentOff', () => {
     expect(calculate([line(4_000, {})]).amount.toString()).toBe('0');
     expect(
       calculate([line(4_000, { promotion: 'summer' })], {
-        percentage_off: 0,
+        percentageOff: 0,
       }).amount.toString()
     ).toBe('0');
   });

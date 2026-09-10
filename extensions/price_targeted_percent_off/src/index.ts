@@ -16,7 +16,7 @@
  */
 
 import type { Commerce, Context } from '@stripe/extensibility-sdk';
-import { Decimal, DEFAULT_DIV_PRECISION } from '@stripe/extensibility-sdk';
+import { Decimal } from '@stripe/extensibility-sdk';
 
 export interface PriceTargetedPercentOffConfig extends Record<string, unknown> {
   /**
@@ -24,19 +24,19 @@ export interface PriceTargetedPercentOffConfig extends Record<string, unknown> {
    * @displayName Percentage off
    * @format percent
    */
-  percentage_off: number;
+  percentageOff: number;
 
   /**
    * Price metadata key used to select eligible line items.
    * @displayName Metadata key
    */
-  metadata_key: string;
+  metadataKey: string;
 
   /**
    * Exact price metadata value required for eligibility.
    * @displayName Metadata value
    */
-  metadata_value: string;
+  metadataValue: string;
 }
 
 function minimum(left: Decimal, right: Decimal): Decimal {
@@ -50,22 +50,18 @@ export default class PriceTargetedPercentOff implements Commerce.DiscountCalcula
     _context: Context
   ): Commerce.DiscountCalculation.DiscountResult {
     const { grossAmount } = request;
-    const percentage = Math.min(Math.max(config.percentage_off, 0), 100);
+    const percentage = Math.min(Math.max(config.percentageOff, 0), 1);
 
     let totalDiscount = Decimal.zero;
-    if (percentage > 0 && config.metadata_key.length > 0) {
+    if (percentage > 0 && config.metadataKey.length > 0) {
       for (const lineItem of request.lineItems) {
         const metadataMatches =
-          lineItem.price?.metadata[config.metadata_key] === config.metadata_value;
+          lineItem.price?.metadata[config.metadataKey] === config.metadataValue;
         const currencyMatches =
           lineItem.subtotal.currency.toLowerCase() === grossAmount.currency.toLowerCase();
 
         if (metadataMatches && currencyMatches && lineItem.subtotal.amount.isPositive()) {
-          totalDiscount = totalDiscount.add(
-            lineItem.subtotal.amount
-              .mul(percentage)
-              .div(100, DEFAULT_DIV_PRECISION, 'half-even')
-          );
+          totalDiscount = totalDiscount.add(lineItem.subtotal.amount.mul(percentage));
         }
       }
     }

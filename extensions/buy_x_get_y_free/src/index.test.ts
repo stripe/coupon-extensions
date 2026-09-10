@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import type { Billing, Commerce, Context } from '@stripe/extensibility-sdk';
-import { Decimal, PositiveInteger } from '@stripe/extensibility-sdk';
+import { Decimal } from '@stripe/extensibility-sdk';
 
 import BuyXGetYFree, { type BuyXGetYFreeConfig } from './index.js';
 
@@ -34,10 +34,10 @@ function line({
 }
 
 const config: BuyXGetYFreeConfig = {
-  quantity_required: PositiveInteger.from(3, 'round-down'),
-  quantity_free: PositiveInteger.from(2, 'round-down'),
-  metadata_key: 'promotion',
-  metadata_value: 'bogo',
+  quantityRequired: 3,
+  quantityFree: 2,
+  metadataKey: 'promotion',
+  metadataValue: 'bogo',
 };
 
 function calculate(

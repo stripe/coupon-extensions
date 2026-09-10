@@ -21,9 +21,9 @@ function line(
 }
 
 const config: PriceTargetedAmountOffConfig = {
-  fixed_amount_off: { amount: Decimal.from(1_500), currency: 'usd' },
-  metadata_key: 'promotion',
-  metadata_value: 'summer',
+  fixedAmountOff: { amount: Decimal.from(1_500), currency: 'usd' },
+  metadataKey: 'promotion',
+  metadataValue: 'summer',
 };
 
 function calculate(
@@ -73,7 +73,7 @@ describe('PriceTargetedAmountOff', () => {
 
   test('returns zero when the configured currency does not match', () => {
     const discount = calculate([line(4_000, { promotion: 'summer' })], {
-      fixed_amount_off: { amount: Decimal.from(1_500), currency: 'eur' },
+      fixedAmountOff: { amount: Decimal.from(1_500), currency: 'eur' },
     });
 
     expect(discount.amount.toString()).toBe('0');

@@ -20,14 +20,14 @@ Use these extensions to override default coupon and discounting logic — contro
 
 ### Percent off up to maximum
 
-Applies `percentage_discount` to the invoice gross amount and limits the result to `maximum_discount`. The maximum must use the invoice currency; a currency mismatch produces no discount.
+Applies `percentageDiscount` to the invoice gross amount and limits the result to `maximumDiscount`. The maximum must use the invoice currency; a currency mismatch produces no discount.
 
 For example, a 20% discount with a $50 maximum discounts a $100 invoice by $20 and a $500 invoice by $50.
 
-| Configuration         | Type            | Description                                                      |
-| --------------------- | --------------- | ---------------------------------------------------------------- |
-| `percentage_discount` | Percentage      | Percentage of the invoice total to discount, from 0 through 100. |
-| `maximum_discount`    | Monetary amount | Maximum amount that can be discounted.                           |
+| Configuration        | Type            | Description                                                                      |
+| -------------------- | --------------- | -------------------------------------------------------------------------------- |
+| `percentageDiscount` | Percentage      | Percentage of the invoice total to discount, from 0 through 1 (0% through 100%). |
+| `maximumDiscount`    | Monetary amount | Maximum amount that can be discounted.                                           |
 
 ### Buy X, get Y free
 
@@ -35,32 +35,32 @@ Selects products by an exact metadata key/value match. Quantities are combined b
 
 For example, with a required quantity of 3 and a free quantity of 2, purchasing 3 units gives no discount, purchasing 4 or 5 discounts 1 or 2 units, and purchasing 6 or more still discounts only 2 units.
 
-| Configuration       | Type    | Description                                                   |
-| ------------------- | ------- | ------------------------------------------------------------- |
-| `quantity_required` | Integer | Units that must be purchased before free units are available. |
-| `quantity_free`     | Integer | Maximum number of additional units that can be free.          |
-| `metadata_key`      | String  | Product metadata key used to select eligible products.        |
-| `metadata_value`    | String  | Exact product metadata value required for eligibility.        |
+| Configuration      | Type    | Description                                                   |
+| ------------------ | ------- | ------------------------------------------------------------- |
+| `quantityRequired` | Integer | Units that must be purchased before free units are available. |
+| `quantityFree`     | Integer | Maximum number of additional units that can be free.          |
+| `metadataKey`      | String  | Product metadata key used to select eligible products.        |
+| `metadataValue`    | String  | Exact product metadata value required for eligibility.        |
 
 ### Price-targeted percent off
 
-Selects invoice lines by an exact metadata key/value match on the corresponding price. The extension applies `percentage_off` to every matching line subtotal and returns their combined discount against the invoice total.
+Selects invoice lines by an exact metadata key/value match on the corresponding price. The extension applies `percentageOff` to every matching line subtotal and returns their combined discount against the invoice total.
 
-| Configuration    | Type       | Description                                                                |
-| ---------------- | ---------- | -------------------------------------------------------------------------- |
-| `percentage_off` | Percentage | Percentage of each matching line subtotal to discount, from 0 through 100. |
-| `metadata_key`   | String     | Price metadata key used to select eligible line items.                     |
-| `metadata_value` | String     | Exact price metadata value required for eligibility.                       |
+| Configuration   | Type       | Description                                                                                |
+| --------------- | ---------- | ------------------------------------------------------------------------------------------ |
+| `percentageOff` | Percentage | Percentage of each matching line subtotal to discount, from 0 through 1 (0% through 100%). |
+| `metadataKey`   | String     | Price metadata key used to select eligible line items.                                     |
+| `metadataValue` | String     | Exact price metadata value required for eligibility.                                       |
 
 ### Price-targeted amount off
 
-Selects invoice lines by an exact metadata key/value match on the corresponding price. The extension applies `fixed_amount_off` once per matching line, caps each application at that line's subtotal, and returns the combined discount. The configured amount must use the invoice currency.
+Selects invoice lines by an exact metadata key/value match on the corresponding price. The extension applies `fixedAmountOff` once per matching line, caps each application at that line's subtotal, and returns the combined discount. The configured amount must use the invoice currency.
 
-| Configuration      | Type            | Description                                            |
-| ------------------ | --------------- | ------------------------------------------------------ |
-| `fixed_amount_off` | Monetary amount | Fixed amount to discount from each matching line item. |
-| `metadata_key`     | String          | Price metadata key used to select eligible line items. |
-| `metadata_value`   | String          | Exact price metadata value required for eligibility.   |
+| Configuration    | Type            | Description                                            |
+| ---------------- | --------------- | ------------------------------------------------------ |
+| `fixedAmountOff` | Monetary amount | Fixed amount to discount from each matching line item. |
+| `metadataKey`    | String          | Price metadata key used to select eligible line items. |
+| `metadataValue`  | String          | Exact price metadata value required for eligibility.   |
 
 ## Getting started
 
