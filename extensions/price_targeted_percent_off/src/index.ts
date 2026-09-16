@@ -18,6 +18,11 @@
 import type { Commerce, Context } from '@stripe/extensibility-sdk';
 import { Decimal } from '@stripe/extensibility-sdk';
 
+export interface MetadataMatcher {
+  key: string;
+  value: string;
+}
+
 export interface PriceTargetedPercentOffConfig extends Record<string, unknown> {
   /**
    * Percentage to discount from each matching line item.
@@ -27,16 +32,10 @@ export interface PriceTargetedPercentOffConfig extends Record<string, unknown> {
   percentageOff: number;
 
   /**
-   * Price metadata key used to select eligible line items.
-   * @displayName Metadata key
+   * Line items qualify when their price metadata contains the specified key set to the specified value.
+   * @displayName Price metadata
    */
-  metadataKey: string;
-
-  /**
-   * Exact price metadata value required for eligibility.
-   * @displayName Metadata value
-   */
-  metadataValue: string;
+  metadataMatcher: MetadataMatcher;
 }
 
 function minimum(left: Decimal, right: Decimal): Decimal {
@@ -53,10 +52,11 @@ export default class PriceTargetedPercentOff implements Commerce.DiscountCalcula
     const percentage = Math.min(Math.max(config.percentageOff, 0), 1);
 
     let totalDiscount = Decimal.zero;
-    if (percentage > 0 && config.metadataKey.length > 0) {
+    if (percentage > 0 && config.metadataMatcher.key.length > 0) {
       for (const lineItem of request.lineItems) {
         const metadataMatches =
-          lineItem.price?.metadata[config.metadataKey] === config.metadataValue;
+          lineItem.price?.metadata[config.metadataMatcher.key] ===
+          config.metadataMatcher.value;
         const currencyMatches =
           lineItem.subtotal.currency.toLowerCase() === grossAmount.currency.toLowerCase();
 
