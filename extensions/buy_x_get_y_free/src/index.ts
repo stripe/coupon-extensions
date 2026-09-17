@@ -2,7 +2,7 @@
  * Buy X, Get Y Free Extension
  *
  * This Stripe Billing extension gives up to a configured number of additional
- * units for free after a customer buys the required quantity of a product.
+ * units for free after a customer buys the purchase quantity of a product.
  * Products qualify through an exact configured metadata key/value pair.
  *
  * Key Features:
@@ -21,34 +21,33 @@
 import type { Commerce, Context } from '@stripe/extensibility-sdk';
 import { Decimal, DEFAULT_DIV_PRECISION } from '@stripe/extensibility-sdk';
 
+export interface MetadataMatcher {
+  key: string;
+  value: string;
+}
+
 export interface BuyXGetYFreeConfig extends Record<string, unknown> {
   /**
    * Number of units that must be purchased before free units are available.
-   * @displayName Quantity required
+   * @displayName Purchase quantity
    * @multipleOf 1
    * @minimum 1
    */
-  quantityRequired: number;
+  purchaseQuantity: number;
 
   /**
    * Maximum number of additional units that can be free.
-   * @displayName Quantity free
+   * @displayName Free quantity
    * @multipleOf 1
    * @minimum 1
    */
-  quantityFree: number;
+  freeQuantity: number;
 
   /**
-   * Product metadata key used to select eligible products.
-   * @displayName Metadata key
+   * Products qualify when their product metadata contains the specified key set to the specified value.
+   * @displayName Product metadata
    */
-  metadataKey: string;
-
-  /**
-   * Exact product metadata value required for eligibility.
-   * @displayName Metadata value
-   */
-  metadataValue: string;
+  metadataMatcher: MetadataMatcher;
 }
 
 interface EligibleLine {
@@ -71,9 +70,9 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     const groupedLines = new Map<string, EligibleLine[]>();
 
     if (
-      config.quantityRequired < 1 ||
-      config.quantityFree < 1 ||
-      config.metadataKey.length === 0
+      config.purchaseQuantity < 1 ||
+      config.freeQuantity < 1 ||
+      config.metadataMatcher.key.length === 0
     ) {
       return {
         discount: {
@@ -85,7 +84,7 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     for (const lineItem of request.lineItems) {
       const product = lineItem.price?.product;
       const metadataMatches =
-        product?.metadata[config.metadataKey] === config.metadataValue;
+        product?.metadata[config.metadataMatcher.key] === config.metadataMatcher.value;
       const currencyMatches =
         lineItem.subtotal.currency.toLowerCase() === grossAmount.currency.toLowerCase();
       const quantity = lineItem.quantity;
@@ -111,8 +110,8 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     }
 
     let totalDiscount = Decimal.zero;
-    const requiredQuantity = Decimal.from(config.quantityRequired);
-    const maximumFreeQuantity = Decimal.from(config.quantityFree);
+    const purchaseQuantity = Decimal.from(config.purchaseQuantity);
+    const freeQuantity = Decimal.from(config.freeQuantity);
 
     for (const lines of groupedLines.values()) {
       let totalQuantity = Decimal.zero;
@@ -122,12 +121,12 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
         totalSubtotal = totalSubtotal.add(line.subtotal);
       }
 
-      const additionalQuantity = totalQuantity.sub(requiredQuantity);
+      const additionalQuantity = totalQuantity.sub(purchaseQuantity);
       if (!additionalQuantity.isPositive()) {
         continue;
       }
 
-      let remainingFreeQuantity = minimum(additionalQuantity, maximumFreeQuantity);
+      let remainingFreeQuantity = minimum(additionalQuantity, freeQuantity);
       let productDiscount = Decimal.zero;
       const cheapestFirst = [...lines].sort((left, right) =>
         left.unitAmount.cmp(right.unitAmount)

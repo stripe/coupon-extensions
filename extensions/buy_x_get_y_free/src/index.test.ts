@@ -34,10 +34,12 @@ function line({
 }
 
 const config: BuyXGetYFreeConfig = {
-  quantityRequired: 3,
-  quantityFree: 2,
-  metadataKey: 'promotion',
-  metadataValue: 'bogo',
+  purchaseQuantity: 3,
+  freeQuantity: 2,
+  metadataMatcher: {
+    key: 'promotion',
+    value: 'bogo',
+  },
 };
 
 function calculate(
@@ -129,6 +131,62 @@ describe('BuyXGetYFree', () => {
       line({ quantity: 0, subtotal: 5_000 }),
       line({ quantity: 5, subtotal: 5_000, currency: 'eur' }),
     ]);
+
+    expect(discount.amount.toString()).toBe('0');
+  });
+
+  test.each([
+    ['purchase quantity', { purchaseQuantity: 0 }],
+    ['free quantity', { freeQuantity: 0 }],
+    ['metadata key', { metadataMatcher: { key: '', value: 'bogo' } }],
+  ] satisfies [string, Partial<BuyXGetYFreeConfig>][])(
+    'returns zero when the configured %s is invalid',
+    (_label, override) => {
+      const discount = calculate(
+        [line({ quantity: 5, subtotal: 5_000 })],
+        100_000,
+        override
+      );
+
+      expect(discount.amount.toString()).toBe('0');
+    }
+  );
+
+  test.each([0, -2])(
+    'ignores a line with quantity %s without changing the qualifying product total',
+    (quantity) => {
+      const discount = calculate([
+        line({ quantity: 4, subtotal: 4_000 }),
+        line({ quantity, subtotal: 2_000 }),
+      ]);
+
+      expect(discount.amount.toString()).toBe('1000');
+    }
+  );
+
+  test.each([0, -100])(
+    'ignores a line with subtotal %s without consuming free quantity',
+    (subtotal) => {
+      const discount = calculate([
+        line({ quantity: 4, subtotal: 4_000 }),
+        line({ quantity: 100, subtotal }),
+      ]);
+
+      expect(discount.amount.toString()).toBe('1000');
+    }
+  );
+
+  test('matches line-item and invoice currencies case-insensitively', () => {
+    const discount = calculate([
+      line({ quantity: 4, subtotal: 4_000, currency: 'USD' as Billing.Currency }),
+    ]);
+
+    expect(discount.amount.toString()).toBe('1000');
+    expect(discount.currency).toBe('usd');
+  });
+
+  test.each([0, -1_000])('returns zero for a gross amount of %s', (grossAmount) => {
+    const discount = calculate([line({ quantity: 5, subtotal: 5_000 })], grossAmount);
 
     expect(discount.amount.toString()).toBe('0');
   });

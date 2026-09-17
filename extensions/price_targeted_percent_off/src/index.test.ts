@@ -26,8 +26,10 @@ function line(
 
 const config: PriceTargetedPercentOffConfig = {
   percentageOff: 0.25,
-  metadataKey: 'promotion',
-  metadataValue: 'summer',
+  metadataMatcher: {
+    key: 'promotion',
+    value: 'summer',
+  },
 };
 
 function calculate(
@@ -80,10 +82,19 @@ describe('PriceTargetedPercentOff', () => {
     expect(discount.amount.toString()).toBe('0');
   });
 
-  test('caps the percentage and aggregate discount at the invoice total', () => {
+  test('caps percentages above 100 percent before summing line discounts', () => {
     const discount = calculate(
       [line(8_000, { promotion: 'summer' }), line(8_000, { promotion: 'summer' })],
-      { percentageOff: 1.5 },
+      { percentageOff: 1.5 }
+    );
+
+    expect(discount.amount.toString()).toBe('16000');
+  });
+
+  test('caps the aggregate discount at the invoice total', () => {
+    const discount = calculate(
+      [line(8_000, { promotion: 'summer' }), line(8_000, { promotion: 'summer' })],
+      { percentageOff: 1 },
       10_000
     );
 
@@ -97,5 +108,45 @@ describe('PriceTargetedPercentOff', () => {
         percentageOff: 0,
       }).amount.toString()
     ).toBe('0');
+  });
+
+  test('returns zero when the metadata key is empty', () => {
+    const discount = calculate([line(4_000, { promotion: 'summer' })], {
+      metadataMatcher: { key: '', value: 'summer' },
+    });
+
+    expect(discount.amount.toString()).toBe('0');
+  });
+
+  test('returns zero for a negative percentage', () => {
+    const discount = calculate([line(4_000, { promotion: 'summer' })], {
+      percentageOff: -0.25,
+    });
+
+    expect(discount.amount.toString()).toBe('0');
+  });
+
+  test('ignores a matching line with a negative subtotal', () => {
+    const discount = calculate([
+      line(-4_000, { promotion: 'summer' }),
+      line(4_000, { promotion: 'summer' }),
+    ]);
+
+    expect(discount.amount.toString()).toBe('1000');
+  });
+
+  test('matches line-item and invoice currencies case-insensitively', () => {
+    const discount = calculate([
+      line(4_000, { promotion: 'summer' }, 'USD' as Billing.Currency),
+    ]);
+
+    expect(discount.amount.toString()).toBe('1000');
+    expect(discount.currency).toBe('usd');
+  });
+
+  test.each([0, -1_000])('returns zero for a gross amount of %s', (grossAmount) => {
+    const discount = calculate([line(4_000, { promotion: 'summer' })], {}, grossAmount);
+
+    expect(discount.amount.toString()).toBe('0');
   });
 });

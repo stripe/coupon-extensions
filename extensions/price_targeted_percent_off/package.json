@@ -1,6 +1,6 @@
 {
   "name": "price_targeted_percent_off",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Price-targeted percent off",
   "private": true,
   "license": "~~proprietary~~",

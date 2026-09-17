@@ -59,15 +59,46 @@ describe('PercentOffUpToMaximum', () => {
     expect(discount.amount.toString()).toBe('0');
   });
 
-  test('returns zero for zero percent or a non-positive invoice', () => {
-    const config: PercentOffUpToMaximumConfig = {
-      percentageDiscount: 0,
-      maximumDiscount: { amount: Decimal.from(5_000), currency: 'usd' },
-    };
+  test('matches configured and invoice currencies case-insensitively', () => {
+    const discount = calculate(10_000, {
+      percentageDiscount: 0.2,
+      maximumDiscount: {
+        amount: Decimal.from(5_000),
+        currency: 'USD' as Billing.Currency,
+      },
+    });
 
-    expect(calculate(10_000, config).amount.toString()).toBe('0');
-    expect(calculate(0, { ...config, percentageDiscount: 0.2 }).amount.toString()).toBe(
-      '0'
-    );
+    expect(discount.amount.toString()).toBe('2000');
+    expect(discount.currency).toBe('usd');
+  });
+
+  test.each([0, -0.1])('returns zero for a percentage of %s', (percentageDiscount) => {
+    const discount = calculate(10_000, {
+      percentageDiscount,
+      maximumDiscount: { amount: Decimal.from(5_000), currency: 'usd' },
+    });
+
+    expect(discount.amount.toString()).toBe('0');
+  });
+
+  test.each([0, -500])(
+    'returns zero for a maximum discount amount of %s',
+    (maximumDiscount) => {
+      const discount = calculate(10_000, {
+        percentageDiscount: 0.2,
+        maximumDiscount: { amount: Decimal.from(maximumDiscount), currency: 'usd' },
+      });
+
+      expect(discount.amount.toString()).toBe('0');
+    }
+  );
+
+  test.each([0, -10_000])('returns zero for a gross amount of %s', (grossAmount) => {
+    const discount = calculate(grossAmount, {
+      percentageDiscount: 0.2,
+      maximumDiscount: { amount: Decimal.from(5_000), currency: 'usd' },
+    });
+
+    expect(discount.amount.toString()).toBe('0');
   });
 });
