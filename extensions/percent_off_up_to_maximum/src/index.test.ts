@@ -41,9 +41,9 @@ describe('PercentOffUpToMaximum', () => {
     expect(discount.amount.toString()).toBe('500');
   });
 
-  test('caps percentages above 100 at the invoice total', () => {
+  test('applies the maximum valid percentage of 1 at the invoice total', () => {
     const discount = calculate(10_000, {
-      percentageDiscount: 1.5,
+      percentageDiscount: 1,
       maximumDiscount: { amount: Decimal.from(20_000), currency: 'usd' },
     });
 
@@ -70,6 +70,20 @@ describe('PercentOffUpToMaximum', () => {
 
     expect(discount.amount.toString()).toBe('2000');
     expect(discount.currency).toBe('usd');
+  });
+
+  test('returns the invoice currency on a zero discount', () => {
+    const discount = calculate(
+      10_000,
+      {
+        percentageDiscount: 0,
+        maximumDiscount: { amount: Decimal.from(5_000), currency: 'usd' },
+      },
+      'USD' as Billing.Currency
+    );
+
+    expect(discount.amount.toString()).toBe('0');
+    expect(discount.currency).toBe('USD');
   });
 
   test.each([0, -0.1])('returns zero for a percentage of %s', (percentageDiscount) => {

@@ -1,13 +1,13 @@
 /**
  * Percent Off Up to Maximum Extension
  *
- * This Stripe Billing extension applies a percentage discount to the total
+ * This Stripe Coupon extension applies a percentage discount to the total
  * invoice amount while limiting the discount to a configured maximum amount.
  *
  * Key Features:
  * - Applies a configurable percentage to the invoice gross amount
  * - Caps the result at a configurable monetary maximum
- * - Requires the maximum and invoice currencies to match
+ * - Requires the configured currency for the monetary maximum and invoice currencies to match
  * - Never discounts more than the invoice total or returns a negative amount
  *
  * Example:
@@ -23,6 +23,8 @@ export interface PercentOffUpToMaximumConfig extends Record<string, unknown> {
    * Percentage of the invoice total to discount.
    * @displayName Percentage discount
    * @format percent
+   * @maximum 1
+   * @minimum 0
    */
   percentageDiscount: number;
 

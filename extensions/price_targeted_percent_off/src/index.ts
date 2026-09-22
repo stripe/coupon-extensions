@@ -1,7 +1,7 @@
 /**
  * Price-Targeted Percent Off Extension
  *
- * This Stripe Billing extension applies a percentage discount only to invoice
+ * This Stripe Coupon extension applies a percentage discount only to invoice
  * line items whose prices contain an exact configured metadata key/value pair.
  *
  * Key Features:
@@ -28,6 +28,8 @@ export interface PriceTargetedPercentOffConfig extends Record<string, unknown> {
    * Percentage to discount from each matching line item.
    * @displayName Percentage off
    * @format percent
+   * @maximum 1
+   * @minimum 0
    */
   percentageOff: number;
 

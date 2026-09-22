@@ -1,7 +1,7 @@
 /**
  * Buy X, Get Y Free Extension
  *
- * This Stripe Billing extension gives up to a configured number of additional
+ * This Stripe Coupon extension gives up to a configured number of additional
  * units for free after a customer buys the purchase quantity of a product.
  * Products qualify through an exact configured metadata key/value pair.
  *
@@ -11,11 +11,14 @@
  * - Aggregates quantities when one product appears on multiple invoice lines
  * - Discounts the cheapest eligible units when line prices differ
  * - Supports fractional quantities proportionally
+ * - Supports a zero purchase threshold, making eligible units immediately free
  * - Never discounts more than qualifying subtotals or the invoice total
  *
  * Example:
  * - With Buy 3, Get 2 Free, buying 3 units gives no discount, buying 4 or 5
  *   discounts 1 or 2 units, and buying 6 or more still discounts only 2 units.
+ * - With Buy 0, Get 2 Free, buying 1 unit discounts 1 unit, while buying 2 or
+ *   more units discounts 2 units.
  */
 
 import type { Commerce, Context } from '@stripe/extensibility-sdk';
@@ -31,7 +34,7 @@ export interface BuyXGetYFreeConfig extends Record<string, unknown> {
    * Number of units that must be purchased before free units are available.
    * @displayName Purchase quantity
    * @multipleOf 1
-   * @minimum 1
+   * @minimum 0
    */
   purchaseQuantity: number;
 
@@ -70,7 +73,7 @@ export default class BuyXGetYFree implements Commerce.DiscountCalculation<BuyXGe
     const groupedLines = new Map<string, EligibleLine[]>();
 
     if (
-      config.purchaseQuantity < 1 ||
+      config.purchaseQuantity < 0 ||
       config.freeQuantity < 1 ||
       config.metadataMatcher.key.length === 0
     ) {

@@ -76,6 +76,27 @@ describe('BuyXGetYFree', () => {
     );
   });
 
+  test('allows free units without a purchase threshold', () => {
+    expect(
+      calculate([line({ quantity: 1, subtotal: 1_000 })], 100_000, {
+        purchaseQuantity: 0,
+        freeQuantity: 2,
+      }).amount.toString()
+    ).toBe('1000');
+    expect(
+      calculate([line({ quantity: 2, subtotal: 2_000 })], 100_000, {
+        purchaseQuantity: 0,
+        freeQuantity: 2,
+      }).amount.toString()
+    ).toBe('2000');
+    expect(
+      calculate([line({ quantity: 3, subtotal: 3_000 })], 100_000, {
+        purchaseQuantity: 0,
+        freeQuantity: 2,
+      }).amount.toString()
+    ).toBe('2000');
+  });
+
   test('aggregates split lines for the same product', () => {
     const discount = calculate([
       line({ quantity: 2, subtotal: 2_000 }),
@@ -101,6 +122,16 @@ describe('BuyXGetYFree', () => {
     ]);
 
     expect(discount.amount.toString()).toBe('2000');
+  });
+
+  test('discounts across multiple price lines in cheapest-first order', () => {
+    const discount = calculate(
+      [line({ quantity: 5, subtotal: 10_000 }), line({ quantity: 2, subtotal: 2_000 })],
+      100_000,
+      { purchaseQuantity: 3, freeQuantity: 3 }
+    );
+
+    expect(discount.amount.toString()).toBe('4000');
   });
 
   test('supports fractional quantities proportionally', () => {
@@ -136,7 +167,7 @@ describe('BuyXGetYFree', () => {
   });
 
   test.each([
-    ['purchase quantity', { purchaseQuantity: 0 }],
+    ['purchase quantity', { purchaseQuantity: -1 }],
     ['free quantity', { freeQuantity: 0 }],
     ['metadata key', { metadataMatcher: { key: '', value: 'bogo' } }],
   ] satisfies [string, Partial<BuyXGetYFreeConfig>][])(
