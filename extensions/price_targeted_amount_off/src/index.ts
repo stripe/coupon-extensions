@@ -1,14 +1,14 @@
 /**
  * Price-Targeted Amount Off Extension
  *
- * This Stripe Billing extension applies a fixed monetary discount to every
+ * This Stripe Coupon extension applies a fixed monetary discount to every
  * invoice line item whose price contains an exact configured metadata pair.
  *
  * Key Features:
  * - Targets prices by exact, case-sensitive metadata matching
  * - Applies the configured amount once per matching line item
  * - Caps each line's discount at that line's subtotal
- * - Requires the configured amount and invoice currencies to match
+ * - Requires the configured currency for the monetary amount and invoice currencies to match
  * - Never discounts more than the invoice total or returns a negative amount
  *
  * Use Cases:
