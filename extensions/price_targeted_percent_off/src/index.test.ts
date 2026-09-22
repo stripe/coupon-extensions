@@ -82,10 +82,10 @@ describe('PriceTargetedPercentOff', () => {
     expect(discount.amount.toString()).toBe('0');
   });
 
-  test('caps percentages above 100 percent before summing line discounts', () => {
+  test('applies the maximum valid percentage of 1 before summing line discounts', () => {
     const discount = calculate(
       [line(8_000, { promotion: 'summer' }), line(8_000, { promotion: 'summer' })],
-      { percentageOff: 1.5 }
+      { percentageOff: 1 }
     );
 
     expect(discount.amount.toString()).toBe('16000');
@@ -129,6 +129,15 @@ describe('PriceTargetedPercentOff', () => {
   test('ignores a matching line with a negative subtotal', () => {
     const discount = calculate([
       line(-4_000, { promotion: 'summer' }),
+      line(4_000, { promotion: 'summer' }),
+    ]);
+
+    expect(discount.amount.toString()).toBe('1000');
+  });
+
+  test('ignores a matching line with a zero subtotal', () => {
+    const discount = calculate([
+      line(0, { promotion: 'summer' }),
       line(4_000, { promotion: 'summer' }),
     ]);
 
