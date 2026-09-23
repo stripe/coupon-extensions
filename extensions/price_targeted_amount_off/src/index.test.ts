@@ -131,6 +131,15 @@ describe('PriceTargetedAmountOff', () => {
     expect(discount.amount.toString()).toBe('1500');
   });
 
+  test('ignores a matching line with a zero subtotal', () => {
+    const discount = calculate([
+      line(0, { promotion: 'summer' }),
+      line(4_000, { promotion: 'summer' }),
+    ]);
+
+    expect(discount.amount.toString()).toBe('1500');
+  });
+
   test('matches configured and line-item currencies case-insensitively', () => {
     const discount = calculate(
       [line(4_000, { promotion: 'summer' }, 'USD' as Billing.Currency)],
