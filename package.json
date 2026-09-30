@@ -1,10 +1,10 @@
 {
   "name": "com.stripe.coupon.extensions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stripe Coupon Extensions",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
-    "@stripe/extensibility-dev-tools": "^2.0.2",
+    "@stripe/extensibility-dev-tools": "^2.0.7",
     "@stripe/extensibility-eslint-plugin": "^2.0.1",
     "@stripe/extensibility-language-server": "^1.0.0",
     "@stripe/extensibility-test-helpers": "^1.2.0",

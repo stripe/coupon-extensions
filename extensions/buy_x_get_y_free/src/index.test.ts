@@ -51,6 +51,7 @@ function calculate(
     {
       grossAmount: { amount: Decimal.from(grossAmount), currency: 'usd' },
       lineItems,
+      subscriptions: {},
     },
     { ...config, ...override },
     context

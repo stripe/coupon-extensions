@@ -1,6 +1,6 @@
 {
   "name": "price_targeted_percent_off",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Price-targeted percent off",
   "private": true,
   "license": "~~proprietary~~",
@@ -11,12 +11,14 @@
     "lint": "pnpm lint:types && pnpm lint:eslint && pnpm lint:format",
     "lint:types": "tsc -p tsconfig.build.json --noEmit && tsc -p tsconfig.json --noEmit",
     "lint:eslint": "eslint .",
-    "lint:format": "prettier --check .",
+    "lint:format": "prettier --list-different .; s=$?; [ $s -eq 1 ] && printf '\\nThe files above are not formatted. Run pnpm fix:format to fix.\\n' >&2; exit $s",
     "fix:lint": "eslint --fix .",
     "fix:format": "prettier --write .",
-    "test": "vitest --root ../.. run --project \"$npm_package_name\"",
-    "test:watch": "pnpm test --watch",
-    "dev": "concurrently -n build,lint,test -c blue,yellow,green 'tsc -p tsconfig.json -w --noEmit' 'chokidar \"src/**/*.{ts,json}\" -c \"eslint .\"' 'pnpm test --watch --no-clear-screen'",
+    "test": "pnpm test:types && pnpm test:vitest",
+    "test:types": "tsc -p tsconfig.json --noEmit",
+    "test:vitest": "vitest --root ../.. run --project \"$npm_package_name\"",
+    "test:watch": "pnpm test:vitest --watch",
+    "dev": "concurrently -n build,lint,test -c blue,yellow,green 'tsc -p tsconfig.json -w --noEmit' 'chokidar \"src/**/*.{ts,json}\" -c \"eslint .\"' 'pnpm test:vitest --watch --no-clear-screen'",
     "stripe:regen": "gen-workspace --root ../.. --package-dir . --template-id commerce.discount_calculation"
   },
   "lint-staged": {
@@ -27,6 +29,9 @@
     "*.{json,md,yaml}": "prettier --write"
   },
   "dependencies": {
-    "@stripe/extensibility-sdk": "^2.0.0"
+    "@stripe/extensibility-sdk": "4.0.0"
+  },
+  "devDependencies": {
+    "@stripe/extensibility-language-server": "^1.0.2"
   }
 }

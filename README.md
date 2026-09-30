@@ -1,135 +1,123 @@
 # Stripe Coupon Extensions
 
-This repository contains the out-of-the-box [Coupon Extensions](https://docs.stripe.com/extensions/discount-calculation-extension) that provide custom discounting logic, available as a first-party app on Stripe. Each extension implements an extension interface and runs as part of a [Stripe App](https://docs.stripe.com/stripe-apps).
+Official first-party Stripe App containing reference implementations for custom coupon and discounting extensions.
 
-Use these extensions to override default coupon and discounting logic — control how discounts are calculated, applied, and combined across invoices and subscriptions.
+These extensions implement the `commerce.discount_calculation` interface, allowing you to override standard Stripe discounting behavior—enabling granular control over how discounts are calculated, applied, and combined across invoices and subscriptions.
+
+---
 
 ## Documentation
 
-- [Discount calculation extensions](https://docs.stripe.com/extensions/discount-calculation-extension) — learn how coupon extensions customize discount calculation.
-- [Stripe Apps](https://docs.stripe.com/stripe-apps) — learn how extensions are packaged and distributed as apps.
+- [Discount Calculation Extensions Interface](https://stripe.com/docs) — Architecture and calculation semantics.
+- [Stripe Apps Framework](https://stripe.com/docs) — Extension packaging, manifests, and distribution.
 
-## Available extensions
+---
 
-| Extension                  | Interface                       | Description                                                                                |
-| -------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
-| Percent off up to maximum  | `commerce.discount_calculation` | Discounts the invoice total by a percentage, up to a configured monetary maximum.          |
-| BOGO and quantity promos   | `commerce.discount_calculation` | Creates configurable buy-one-get-one-style promotions for products with matching metadata. |
-| Price-targeted percent off | `commerce.discount_calculation` | Applies a percentage discount only to line items whose prices have matching metadata.      |
-| Price-targeted amount off  | `commerce.discount_calculation` | Applies a fixed discount to each line item whose price has matching metadata.              |
+## Available Extensions
 
-### Percent off up to maximum
+| Extension                      | Interface                       | Description                                                                                 |
+| :----------------------------- | :------------------------------ | :------------------------------------------------------------------------------------------ |
+| **Percent Off Up to Maximum**  | `commerce.discount_calculation` | Applies a percentage discount to the invoice total, capped at a specified monetary ceiling. |
+| **BOGO & Quantity Promos**     | `commerce.discount_calculation` | Configures buy-X-get-Y promotional logic based on matching product metadata.                |
+| **Price-Targeted Percent Off** | `commerce.discount_calculation` | Applies a percentage discount strictly to line items with matching price metadata.          |
+| **Price-Targeted Amount Off**  | `commerce.discount_calculation` | Deducts a fixed monetary amount per matching line item based on price metadata.             |
 
-Applies `percentageDiscount` to the invoice gross amount and limits the result to `maximumDiscount`. The maximum must use the invoice currency; a currency mismatch produces no discount.
+---
 
-For example, a 20% discount with a $50 maximum discounts a $100 invoice by $20 and a $500 invoice by $50.
+### 1. Percent Off Up to Maximum
 
-| Configuration        | Type            | Description                                                                      |
-| -------------------- | --------------- | -------------------------------------------------------------------------------- |
-| `percentageDiscount` | Percentage      | Percentage of the invoice total to discount, from 0 through 1 (0% through 100%). |
-| `maximumDiscount`    | Monetary amount | Maximum amount that can be discounted.                                           |
+Calculates `percentageDiscount` against the gross invoice total and caps the resulting discount at `maximumDiscount`.
 
-### BOGO and quantity promos
+> **Currency Requirement:** `maximumDiscount` must match the invoice currency. A currency mismatch results in `$0` applied discount.
 
-Selects products by an exact metadata key/value match. Quantities are combined by product, and the offer is applied independently to each matching product. When one product has multiple effective unit prices, the cheapest eligible units are discounted first.
+- **Example:** On a 20% discount with a $50 maximum:
+  - $100 invoice total --> **$20 discount**
+  - $500 invoice total --> **$50 discount** (capped)
 
-For example, with a purchase quantity of 3 and a free quantity of 2, purchasing 3 units gives no discount, purchasing 4 or 5 discounts 1 or 2 units, and purchasing 6 or more still discounts only 2 units.
+#### Configuration Schema
 
-| Configuration           | Type    | Description                                                   |
-| ----------------------- | ------- | ------------------------------------------------------------- |
-| `purchaseQuantity`      | Integer | Units that must be purchased before free units are available. |
-| `freeQuantity`          | Integer | Maximum number of additional units that can be free.          |
-| `metadataMatcher`       | Object  | Required product metadata matcher.                            |
-| `metadataMatcher.key`   | String  | Product metadata key used to select eligible products.        |
-| `metadataMatcher.value` | String  | Exact product metadata value required for eligibility.        |
+| Field                | Type              | Description                                                        |
+| :------------------- | :---------------- | :----------------------------------------------------------------- |
+| `percentageDiscount` | `Percentage`      | Discount rate as a decimal float between `0` and `1` (0% to 100%). |
+| `maximumDiscount`    | `Monetary amount` | Maximum allowable discount amount.                                 |
 
-### Price-targeted percent off
+---
 
-Selects invoice lines by an exact metadata key/value match on the corresponding price. The extension applies `percentageOff` to every matching line subtotal and returns their combined discount against the invoice total.
+### 2. BOGO & Quantity Promos
 
-| Configuration           | Type       | Description                                                                                |
-| ----------------------- | ---------- | ------------------------------------------------------------------------------------------ |
-| `percentageOff`         | Percentage | Percentage of each matching line subtotal to discount, from 0 through 1 (0% through 100%). |
-| `metadataMatcher`       | Object     | Required price metadata matcher.                                                           |
-| `metadataMatcher.key`   | String     | Price metadata key used to select eligible line items.                                     |
-| `metadataMatcher.value` | String     | Exact price metadata value required for eligibility.                                       |
+Filters products via exact metadata key/value matching. Quantities are aggregated by product ID, and promotional logic applies independently per matching product. When a product has multiple effective unit prices, discounts apply to the lowest unit cost first.
 
-### Price-targeted amount off
+- **Example:** For `purchaseQuantity: 3` and `freeQuantity: 2`:
+  - Purchase **3 units** --> 0 free units (threshold met, no promo triggered)
+  - Purchase **4 or 5 units** --> 1 or 2 free units discounted
+  - Purchase **6+ units** --> 2 free units discounted (capped at `freeQuantity`)
 
-Selects invoice lines by an exact metadata key/value match on the corresponding price. The extension applies `fixedAmountOff` once per matching line, caps each application at that line's subtotal, and returns the combined discount. The configured amount must use the invoice currency.
+#### Configuration Schema
 
-| Configuration           | Type            | Description                                            |
-| ----------------------- | --------------- | ------------------------------------------------------ |
-| `fixedAmountOff`        | Monetary amount | Fixed amount to discount from each matching line item. |
-| `metadataMatcher`       | Object          | Required price metadata matcher.                       |
-| `metadataMatcher.key`   | String          | Price metadata key used to select eligible line items. |
-| `metadataMatcher.value` | String          | Exact price metadata value required for eligibility.   |
+| Field                   | Type      | Description                                                   |
+| :---------------------- | :-------- | :------------------------------------------------------------ |
+| `purchaseQuantity`      | `Integer` | Minimum paid unit threshold required before free units apply. |
+| `freeQuantity`          | `Integer` | Maximum number of eligible free units per order.              |
+| `metadataMatcher`       | `Object`  | Product metadata filtering rules.                             |
+| `metadataMatcher.key`   | `String`  | Target product metadata key.                                  |
+| `metadataMatcher.value` | `String`  | Target product metadata value (exact match).                  |
 
-## Getting started
+---
+
+### 3. Price-Targeted Percent Off
+
+Evaluates invoice line items using exact metadata key/value matching against the line's corresponding price object. Applies `percentageOff` to each qualifying line item subtotal and returns the sum as the total invoice discount.
+
+#### Configuration Schema
+
+| Field                   | Type         | Description                                                        |
+| :---------------------- | :----------- | :----------------------------------------------------------------- |
+| `percentageOff`         | `Percentage` | Discount rate as a decimal float between `0` and `1` (0% to 100%). |
+| `metadataMatcher`       | `Object`     | Price metadata filtering rules.                                    |
+| `metadataMatcher.key`   | `String`     | Target price metadata key.                                         |
+| `metadataMatcher.value` | `String`     | Target price metadata value (exact match).                         |
+
+---
+
+### 4. Price-Targeted Amount Off
+
+Evaluates invoice line items using exact metadata key/value matching against the line's corresponding price object. Applies `fixedAmountOff` once per qualifying line (capped at that line's individual subtotal) and returns the aggregated discount total.
+
+> **Currency Requirement:** `fixedAmountOff` must match the invoice currency.
+
+#### Configuration Schema
+
+| Field                   | Type              | Description                                   |
+| :---------------------- | :---------------- | :-------------------------------------------- |
+| `fixedAmountOff`        | `Monetary amount` | Fixed amount deducted per eligible line item. |
+| `metadataMatcher`       | `Object`          | Price metadata filtering rules.               |
+| `metadataMatcher.key`   | `String`          | Target price metadata key.                    |
+| `metadataMatcher.value` | `String`          | Target price metadata value (exact match).    |
+
+---
+
+## Development Setup
 
 ### Prerequisites
 
-- Node.js >= 20
-- [pnpm](https://pnpm.io/) 10
+- **Node.js:** `>= 20.0.0`
+- **pnpm:** `>= 10.0.0`
 
-### Installation
+### Installation & Commands
 
 ```bash
+# Install workspace dependencies
 pnpm install
-```
 
-### Build
-
-```bash
+# Compile extension packages
 pnpm build
-```
 
-### Run tests
-
-```bash
+# Execute test suite (Vitest)
 pnpm test
-```
 
-### Lint
-
-```bash
+# Run ESLint across workspace
 pnpm lint
-```
 
-### Run all checks
-
-Build, lint, and test in one command:
-
-```bash
+# Execute full validation pipeline (Build + Lint + Test)
 pnpm check
 ```
-
-## Project structure
-
-```
-coupon-extensions/
-├── extensions/                 # One package per extension (pnpm workspace)
-│   └── <extension_id>/
-│       ├── src/index.ts        # Extension implementation
-│       ├── src/index.test.ts   # Tests
-│       ├── generated/          # Generated configuration and UI schemas
-│       ├── package.json
-│       ├── tsconfig.json
-│       └── vitest.config.mts
-├── stripe-app.yaml             # App manifest — extension registration
-├── package.json                # Workspace root
-├── pnpm-workspace.yaml
-├── tsconfig.base.json          # Shared TypeScript config
-├── eslint.config.mts
-└── vitest.config.base.mts
-```
-
-Each extension is a self-contained pnpm workspace package under `extensions/`. The `stripe-app.yaml` manifest registers all extensions and points to their configuration schemas and entry points.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and how to submit changes.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
