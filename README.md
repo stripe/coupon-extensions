@@ -1,4 +1,4 @@
-# Stripe Coupon Extensions
+# Stripe coupon extensions
 
 Official first-party Stripe App containing reference implementations for custom coupon and discounting extensions.
 
@@ -8,34 +8,34 @@ These extensions implement the `commerce.discount_calculation` interface, allowi
 
 ## Documentation
 
-- [Stripe Authored Scripts](https://docs.stripe.com/billing/scripts/stripe-authored/discount-calculation) — Additional documentation on these Stripe Authored Scripts 
-- [Authoring Your Own Scripts](https://docs.stripe.com/billing/scripts/discount-calculation) — Step by step guide on creating your own custom coupons.
-- [Stripe Apps Framework](https://docs.stripe.com/stripe-apps) — Apps, extension packaging, manifests, and distribution.
+- [Stripe authored scripts](https://docs.stripe.com/billing/scripts/stripe-authored/discount-calculation) — Additional documentation on these Stripe Authored Scripts 
+- [Authoring your own scripts](https://docs.stripe.com/billing/scripts/discount-calculation) — Step by step guide on creating your own custom coupons.
+- [Stripe apps framework](https://docs.stripe.com/stripe-apps) — Apps, extension packaging, manifests, and distribution.
 
 ---
 
-## Available Extensions
+## Available extensions
 
 | Extension                      | Interface                       | Description                                                                                 |
 | :----------------------------- | :------------------------------ | :------------------------------------------------------------------------------------------ |
-| **Percent Off Up to Maximum**  | `commerce.discount_calculation` | Applies a percentage discount to the invoice total, capped at a specified monetary ceiling. |
-| **BOGO & Quantity Promos**     | `commerce.discount_calculation` | Configures buy-X-get-Y promotional logic based on matching product metadata.                |
-| **Price-Targeted Percent Off** | `commerce.discount_calculation` | Applies a percentage discount strictly to line items with matching price metadata.          |
-| **Price-Targeted Amount Off**  | `commerce.discount_calculation` | Deducts a fixed monetary amount per matching line item based on price metadata.             |
+| **Percent off up to maximum**  | `commerce.discount_calculation` | Applies a percentage discount to the invoice total, capped at a specified monetary ceiling. |
+| **BOGO & quantity promos**     | `commerce.discount_calculation` | Configures buy-X-get-Y promotional logic based on matching product metadata.                |
+| **Price-targeted percent off** | `commerce.discount_calculation` | Applies a percentage discount strictly to line items with matching price metadata.          |
+| **Price-targeted amount off**  | `commerce.discount_calculation` | Deducts a fixed monetary amount per matching line item based on price metadata.             |
 
 ---
 
-### 1. Percent Off Up to Maximum
+### 1. Percent off up to maximum
 
 Calculates `percentageDiscount` against the gross invoice total and caps the resulting discount at `maximumDiscount`.
 
-> **Currency Requirement:** `maximumDiscount` must match the invoice currency. A currency mismatch results in `$0` applied discount.
+> **Currency requirement:** `maximumDiscount` must match the invoice currency. A currency mismatch results in `$0` applied discount.
 
 - **Example:** On a 20% discount with a $50 maximum:
   - $100 invoice total --> **$20 discount**
   - $500 invoice total --> **$50 discount** (capped)
 
-#### Configuration Schema
+#### Configuration schema
 
 | Field                | Type              | Description                                                        |
 | :------------------- | :---------------- | :----------------------------------------------------------------- |
@@ -44,7 +44,7 @@ Calculates `percentageDiscount` against the gross invoice total and caps the res
 
 ---
 
-### 2. BOGO & Quantity Promos
+### 2. BOGO & quantity promos
 
 Filters products via exact metadata key/value matching. Quantities are aggregated by product ID, and promotional logic applies independently per matching product. When a product has multiple effective unit prices, discounts apply to the lowest unit cost first.
 
@@ -53,7 +53,7 @@ Filters products via exact metadata key/value matching. Quantities are aggregate
   - Purchase **4 or 5 units** --> 1 or 2 free units discounted
   - Purchase **6+ units** --> 2 free units discounted (capped at `freeQuantity`)
 
-#### Configuration Schema
+#### Configuration schema
 
 | Field                   | Type      | Description                                                   |
 | :---------------------- | :-------- | :------------------------------------------------------------ |
@@ -65,11 +65,11 @@ Filters products via exact metadata key/value matching. Quantities are aggregate
 
 ---
 
-### 3. Price-Targeted Percent Off
+### 3. Price-targeted percent off
 
 Evaluates invoice line items using exact metadata key/value matching against the line's corresponding price object. Applies `percentageOff` to each qualifying line item subtotal and returns the sum as the total invoice discount.
 
-#### Configuration Schema
+#### Configuration schema
 
 | Field                   | Type         | Description                                                        |
 | :---------------------- | :----------- | :----------------------------------------------------------------- |
@@ -80,13 +80,13 @@ Evaluates invoice line items using exact metadata key/value matching against the
 
 ---
 
-### 4. Price-Targeted Amount Off
+### 4. Price-targeted amount off
 
 Evaluates invoice line items using exact metadata key/value matching against the line's corresponding price object. Applies `fixedAmountOff` once per qualifying line (capped at that line's individual subtotal) and returns the aggregated discount total.
 
 > **Currency Requirement:** `fixedAmountOff` must match the invoice currency.
 
-#### Configuration Schema
+#### Configuration schema
 
 | Field                   | Type              | Description                                   |
 | :---------------------- | :---------------- | :-------------------------------------------- |
@@ -97,14 +97,14 @@ Evaluates invoice line items using exact metadata key/value matching against the
 
 ---
 
-## Development Setup
+## Development setup
 
 ### Prerequisites
 
 - **Node.js:** `>= 20.0.0`
 - **pnpm:** `>= 10.0.0`
 
-### Installation & Commands
+### Installation & commands
 
 ```bash
 # Install workspace dependencies
