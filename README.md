@@ -9,7 +9,7 @@ These extensions implement the `commerce.discount_calculation` interface, allowi
 ## Documentation
 
 - [Stripe Authored Scripts](https://docs.stripe.com/billing/scripts/stripe-authored/discount-calculation) — Additional documentation on these Stripe Authored Scripts 
-- [Authoring Your Own Scripts]([https://stripe.com/docs](https://docs.stripe.com/billing/scripts/discount-calculation)) — Step by step guide on creating your own custom coupons.
+- [Authoring Your Own Scripts](https://docs.stripe.com/billing/scripts/discount-calculation) — Step by step guide on creating your own custom coupons.
 - [Stripe Apps Framework](https://docs.stripe.com/stripe-apps) — Apps, extension packaging, manifests, and distribution.
 
 ---
